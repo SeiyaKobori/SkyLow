@@ -6,6 +6,7 @@ using UnityEngine;
 public class ParalyzeStorm : ItemBase
 {
     protected override int itemId { get; set; } = 1;
+    public override ItemBase.ItemTyoe type { set; get; } = ItemTyoe.jammer;
     private Rigidbody rb = null;
 
     public Vector3 targetPos { set; get; } = Vector3.zero;

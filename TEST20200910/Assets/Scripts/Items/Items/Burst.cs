@@ -5,6 +5,7 @@ using UnityEngine;
 public class Burst : ItemBase
 {
     protected override int itemId { get; set; } = 3;
+    public override ItemBase.ItemTyoe type { set; get; } = ItemTyoe.item;
     private Rigidbody rb = null;
 
     public override void ObtainItem(PlayerManager player)

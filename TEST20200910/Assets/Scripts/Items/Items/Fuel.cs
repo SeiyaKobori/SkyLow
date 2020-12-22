@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fuel : ItemBase
 {
     protected override int itemId { get; set; } = 2;
+    public override ItemBase.ItemTyoe type { set; get; } = ItemTyoe.item;
     private Rigidbody rb = null;
 
     public override void ObtainItem(PlayerManager player)

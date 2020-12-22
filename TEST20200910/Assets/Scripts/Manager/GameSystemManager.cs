@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(EffectManager))]
+[RequireComponent(typeof(LevelManager))]
 public class GameSystemManager : MonoBehaviour
 {
     public PlayerManager player = null;
@@ -11,9 +13,15 @@ public class GameSystemManager : MonoBehaviour
     [SerializeField]
     private Camera mainCamera = null;
 
+    [SerializeField]
     private List<Rigidbody> rigidBodyList = new List<Rigidbody>();
+    private Rigidbody playerRigidbody = null;
+    private GameOverPanel gameOverPanel = null;
 
     private bool isIngame = false;
+    private bool isGravity = false;
+    private Vector3 gravityValue = new Vector3(0, -100, 0);
+    private float gravityAcceleration = 0;
 
     [SerializeField]
     private GravityWall gravityWall = null;
@@ -70,8 +78,19 @@ public class GameSystemManager : MonoBehaviour
     private UIManager uiManager = null;
     private bool isPause = false;
 
+    private bool isDanger = false;
+    private EffectManager effectManager = null;
+
+    private LevelManager levelManager = null;
+
     private void Awake()
     {
+        if (!SystemManager.onSceneDestroyed)
+        {
+            SceneManager.sceneUnloaded += SystemManager.ResetDelegates;
+            SystemManager.onSceneDestroyed = true;
+        }
+
         SystemManager.SetGameSystemManager(this);
         rigidBodyList.Add(distanceWatcher);
         posOld = distanceWatcher.position.z;
@@ -79,6 +98,8 @@ public class GameSystemManager : MonoBehaviour
         SystemManager.IsIngameSwitch += SetIsIngame;
         startCamAnim = StartCamera.gameObject.GetComponent<StartCameraAnimControler>();
         startCamAnim.OnFinishAnim += GameStart;
+        effectManager = GetComponent<EffectManager>();
+        levelManager = GetComponent<LevelManager>();
     }
 
     // Start is called before the first frame update
@@ -87,21 +108,30 @@ public class GameSystemManager : MonoBehaviour
         UpdateHighscoreText();
         player.OnTouchGravity += GameOverGravity;
         player.OnFallStage += GameOverFall;
+        playerRigidbody = SystemManager.player.gameObject.GetComponent<Rigidbody>();
+        SystemManager.gravity.SetGravityPower(levelManager.GetGravityPower(currentLevel));
+        itemManager.SetItemSpawnSpan(levelManager.GetItemSpan(currentLevel));
+        itemManager.SetJammerSpawnSpan(levelManager.GetjammerSpan(currentLevel));
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
-            Debug.Log(Application.dataPath);
+            SystemManager.gravity.GetDistanceWithGravityWall(player.transform.position);
+            
 
         if (!isIngame)
             return;
 
+        UpdateIsDanger();
         UpdateIsGameOverFall();
         UpdateDistanceWatcher();
         UpdateStepsManager();
+        UpdateGameOverHeight();
         gravityWall.Gravity();
+        UpdateItemManager();
+        Gravity();
     }
 
     public void PlayerMove(Vector3 vector) //プレイヤーが動くことに合わせてゲーム内全てのrigidbodyを逆に移動させる
@@ -110,6 +140,24 @@ public class GameSystemManager : MonoBehaviour
         {
             rigidBodyList[i].AddForce(-vector, ForceMode.Acceleration);
         }
+        gameOverPanel.PlayerMoveForward(vector);
+    }
+
+    public void Gravity()
+    {
+        if (!playerRigidbody.useGravity || SystemManager.GetIsGrounded())
+        {
+            gravityAcceleration = 0;
+            return;
+        }
+
+        for (int i = 0; i < rigidBodyList.Count; i++)
+        {
+            if (rigidBodyList[i].gameObject.tag == "Player")
+                continue;
+            rigidBodyList[i].AddForce(-(gravityValue + (gravityValue)), ForceMode.Acceleration);
+        }
+        gravityAcceleration += Time.deltaTime;
     }
 
     public void SetRigidbodyList(Rigidbody rb)
@@ -153,57 +201,20 @@ public class GameSystemManager : MonoBehaviour
             GameOverFall();
     }
 
+    private void UpdateItemManager()
+    {
+        itemManager.UpdateItemSpawn();
+        itemManager.UpdateJammerSpawn();
+    }
+
     private void LevelUp()
     {
         ++currentLevel;
         Debug.Log("LEVEL UP!! : " + currentLevel);
-        switch(currentLevel)
-        {
-            case 2:
-                GenerateStepSpan = 50;
-                SystemManager.gravity.SetGravityPower(56);
-                break;
-
-            case 3:
-                GenerateStepSpan = 60;
-                SystemManager.gravity.SetGravityPower(57);
-                break;
-
-            case 4:
-                GenerateStepSpan = 70;
-                SystemManager.gravity.SetGravityPower(58);
-                break;
-
-            case 5:
-                GenerateStepSpan = 80;
-                SystemManager.gravity.SetGravityPower(59);
-                break;
-
-            case 6:
-                GenerateStepSpan = 90;
-                SystemManager.gravity.SetGravityPower(60);
-                break;
-
-            case 7:
-                GenerateStepSpan = 100;
-                SystemManager.gravity.SetGravityPower(61);
-                break;
-
-            case 8:
-                GenerateStepSpan = 110;
-                SystemManager.gravity.SetGravityPower(62);
-                break;
-
-            case 9:
-                GenerateStepSpan = 110;
-                SystemManager.gravity.SetGravityPower(63);
-                break;
-
-            case 10:
-                GenerateStepSpan = 120;
-                SystemManager.gravity.SetGravityPower(64);
-                break;
-        }
+        GenerateStepSpan = levelManager.GetGenerateStepSpan(currentLevel);
+        SystemManager.gravity.SetGravityPower(levelManager.GetGravityPower(currentLevel));
+        itemManager.SetJammerSpawnSpan(levelManager.GetjammerSpan(currentLevel));
+        itemManager.SetItemSpawnSpan(levelManager.GetItemSpan(currentLevel));
     }
 
     private void GameOverFall()
@@ -239,8 +250,15 @@ public class GameSystemManager : MonoBehaviour
 
     private IEnumerator GameOverFallCoroutine()
     {
-        yield return new WaitForSeconds(1.5f);
         var t = 0f;
+        var waitTime = 1.5f;
+        while(t < waitTime)
+        {
+            playerRigidbody.AddForce(gravityValue, ForceMode.Acceleration);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        t = 0;
         var fadeTime = 0.8f;
         gameoverCanvas.gameObject.SetActive(true);
         while(t < fadeTime)
@@ -277,6 +295,7 @@ public class GameSystemManager : MonoBehaviour
         mainCamera.transform.position = player.transform.position;
         startFloor.ResetStartFloor();
         player.ActivateBlinkEffect();
+        gameOverPanel.ResetGameOverPanel();
     }
 
     public void GameStart()
@@ -313,11 +332,6 @@ public class GameSystemManager : MonoBehaviour
     public void BackToMenu()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    private void UpdateItemManager()
-    {
-
     }
 
     private IEnumerator ContinueCoroutine()
@@ -360,5 +374,31 @@ public class GameSystemManager : MonoBehaviour
     public void SaveData()
     {
         SystemManager.SavePlayerData();
+    }
+
+    public void SetGameOverPanel(GameOverPanel panel)
+    {
+        gameOverPanel = panel;
+    }
+
+    private void UpdateIsDanger()
+    {
+        var dis = SystemManager.gravity.GetDistanceWithGravityWall(player.transform.position);
+
+        if(isDanger)
+        {
+            if (dis > 20)
+                effectManager.SetGravityParticleActive(false);
+        }
+        else
+        {
+            if (dis < 20)
+                effectManager.SetGravityParticleActive(true);
+        }
+    }
+
+    private void UpdateGameOverHeight()
+    {
+        gameOverPanel.CheckLowestOfHeight(stepManager.GetBottomOfHeight());
     }
 }

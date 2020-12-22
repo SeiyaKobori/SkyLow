@@ -20,7 +20,7 @@ public class PlayerLocomotor : MonoBehaviour
     private float airForwardPower = 6;
 
     private float airForwardPowerCurrent = 0;
-    public float airForwardPowerMAX = 200f;
+    public float airForwardPowerMAX = 500f;
 
     private const float floatingSpeed = 7f; //システム的に前に進むスピード
 
@@ -37,6 +37,9 @@ public class PlayerLocomotor : MonoBehaviour
 
     public ParticleSystem boostParticle = null;
 
+    private Color boostNormalColor = new Color32(0, 245, 255, 255);
+    private Color boostOverHeatColor = new Color32(255, 0, 110, 255);
+
     public bool isCoroutine = false;
 
     private bool isParalyzed = false;
@@ -45,6 +48,9 @@ public class PlayerLocomotor : MonoBehaviour
     public bool isBurst = false;
 
     private bool isIngame = false;
+
+    [SerializeField]
+    private EffectManager effectManager = null;
 
     private void Awake()
     {
@@ -96,7 +102,7 @@ public class PlayerLocomotor : MonoBehaviour
         if (currentBoostRemain <= 0)
             return;
 
-        var vec = new Vector3((vector.x * moveInAirPower), (vector.y * moveInAirPower * 2.0f), airForwardPowerCurrent);
+        var vec = new Vector3((vector.x * moveInAirPower), Mathf.Abs(transform.position.y) < 80 ? (vector.y * moveInAirPower * 2.0f) : 0, airForwardPowerCurrent);
         AddForce(vec, ForceMode.Acceleration);
 
         UpdateRotationOnAir(vec);
@@ -184,7 +190,7 @@ public class PlayerLocomotor : MonoBehaviour
             return;
         }
 
-        if (TouchUtility.GetTouch() == TouchInfo.Moved || TouchUtility.GetTouch() == TouchInfo.Stationary)
+        if ((TouchUtility.GetTouch() == TouchInfo.Moved || TouchUtility.GetTouch() == TouchInfo.Stationary) && currentBoostRemain > 0)
         {
             currentBoostRemain -= boostCost * Time.deltaTime;
             if (currentBoostRemain < 0)
@@ -192,20 +198,43 @@ public class PlayerLocomotor : MonoBehaviour
 
             if (isBurst)
                 currentBoostRemain = boostMax;
+            else
+            {
+                var l = Mathf.InverseLerp(0, boostMax, currentBoostRemain);
+                var main = boostParticle.main;
+                var c = main.startColor.color;
+                c.r = Mathf.Lerp(boostOverHeatColor.r, boostNormalColor.r, l);
+                c.g = Mathf.Lerp(boostOverHeatColor.g, boostNormalColor.g, l);
+                c.b = Mathf.Lerp(boostOverHeatColor.b, boostNormalColor.b, l);
+                c.a = Mathf.Lerp(boostOverHeatColor.a, boostNormalColor.a, l);
 
-            if (!boostParticle.isEmitting && currentBoostRemain > 0)
+                main.startColor = c;
+            }
+
+            if (!boostParticle.isEmitting)
+            {
                 SetBoostParticleActive(true);
+            }
         }
         else if (boostParticle.isEmitting)
+        {
             SetBoostParticleActive(false);
+        }
     }
 
     private void SetBoostParticleActive(bool active)
     {
         if (active)
+        {
             boostParticle.Play();
+        }
         else
+        {
             boostParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            if (isBurst)
+                effectManager.SetBurstParticleActive(false);
+        }
+        effectManager.SetBoostParticleActive(active);
     }
 
     private void UpdateBoostUI()
@@ -274,5 +303,12 @@ public class PlayerLocomotor : MonoBehaviour
     private void SetIsIngame(bool active)
     {
         isIngame = active;
+    }
+
+    public void SetIsBurst(bool active)
+    {
+        isBurst = active;
+        if (!active)
+            effectManager.SetBurstParticleActive(false);
     }
 }

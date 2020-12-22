@@ -47,6 +47,7 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Unity/VSTU</UnityProjectGenerator>
+    <UnityProjectGeneratorVersion>2.8.3.0</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>iOS:9</UnityBuildTarget>
     <UnityVersion>2019.2.3f1</UnityVersion>
@@ -68,6 +69,7 @@
     <Compile Include="Assets\Scripts\Ads\AdsManager.cs" />
     <Compile Include="Assets\Scripts\Camera\PlayerCameraControler.cs" />
     <Compile Include="Assets\Scripts\Camera\StartCameraAnimControler.cs" />
+    <Compile Include="Assets\Scripts\Environment\Effects\EffectManager.cs" />
     <Compile Include="Assets\Scripts\Environment\GameOver\GameOverPanel.cs" />
     <Compile Include="Assets\Scripts\Environment\GravityWall\GravityWall.cs" />
     <Compile Include="Assets\Scripts\Environment\Steps\ObjectPool.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Assets\Scripts\Items\Items\TakeOffPanel.cs" />
     <Compile Include="Assets\Scripts\Items\ItemsManager.cs" />
     <Compile Include="Assets\Scripts\Manager\GameSystemManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\LevelManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAnimationControler.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerLocomotor.cs" />
@@ -274,8 +277,14 @@
     <Reference Include="Unity.CollabProxy.Editor">
       <HintPath>/Users/seiya/Documents/UnityProjects/TEST20200910/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Postprocessing.Editor">
+      <HintPath>/Users/seiya/Documents/UnityProjects/TEST20200910/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>/Users/seiya/Documents/UnityProjects/TEST20200910/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>/Users/seiya/Documents/UnityProjects/TEST20200910/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>/Users/seiya/Documents/UnityProjects/TEST20200910/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>

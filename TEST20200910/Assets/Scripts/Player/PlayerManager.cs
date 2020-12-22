@@ -40,6 +40,9 @@ public class PlayerManager : MonoBehaviour
 
     private SkinnedMeshRenderer meshrenderer = null;
 
+    private float burstForwardPower = 1000;
+    private float defaultForwardPower = 0; //PlayerLocomotorの初期最大値を参照
+
     private void Awake()
     {
         SystemManager.player = this;
@@ -51,6 +54,7 @@ public class PlayerManager : MonoBehaviour
         SystemManager.IsIngameSwitch += SetIsIngame;
 
         meshrenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        defaultForwardPower = locomotor.airForwardPowerMAX;
     }
 
     // Start is called before the first frame update
@@ -161,6 +165,9 @@ public class PlayerManager : MonoBehaviour
 
         if (other.tag == "Gravity")
             OnTouchGravity();
+
+        if (other.tag == "GameOverFall")
+            FallenStage();
     }
 
     public void GetDamage(float paralyzeTime = 2.0f)
@@ -208,10 +215,10 @@ public class PlayerManager : MonoBehaviour
             SetParalyzeActive(false);
 
         isBurst = active;
-        locomotor.isBurst = active;
+        locomotor.SetIsBurst(active);
         locomotor.boostParticle.Stop();
         locomotor.boostParticle = active ? burstParticle : boostParticle;
-        locomotor.airForwardPowerMAX = active ? 800 : 200;
+        locomotor.airForwardPowerMAX = active ? burstForwardPower : defaultForwardPower;
         burstTime = 0;
     }
 

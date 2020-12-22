@@ -9,7 +9,7 @@ public class ItemsManager : MonoBehaviour
     {
         public GameObject itemPrefab = null;
         [HideInInspector]
-        public int id;
+        public ItemBase item;
         public int percent; //全体の中での比率
         [HideInInspector]
         public ObjectPool _pool = null;
@@ -22,9 +22,14 @@ public class ItemsManager : MonoBehaviour
 
     private readonly Vector3 generateOrigin = new Vector3(0, -200, 500);
 
-    private float randomGenTime = 0;
-    [SerializeField]
-    private float genSpan = 0.25f;
+    public float generateJammerSpan = 0; //大体n秒後に邪魔アイテムがスポーン
+    private float nextJammerSpawnTime = 0;
+    private float genJammertime = 0f;
+
+    public float generateItemSpan = 0; //大体n秒後にアイテムがスポーン
+    private float nextItemSpawnTime = 0;
+    private float genItemtime = 0f;
+
 
     private void Awake()
     {
@@ -40,13 +45,7 @@ public class ItemsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //テスト用生成
-        randomGenTime += Time.deltaTime;
-        if (randomGenTime > genSpan)
-        {
-            ActivateRandomItem();
-            randomGenTime = 0;
-        }
+
     }
 
     private void SetupItemInfo()
@@ -54,7 +53,7 @@ public class ItemsManager : MonoBehaviour
         for (int i = 0; i < items.Count; i++)
         {
             //アイテムIDを登録
-            items[i].id = items[i].itemPrefab.GetComponent<ItemBase>().GetItemId();
+            items[i].item = items[i].itemPrefab.GetComponent<ItemBase>();
 
             //オブジェクトプールを生成
             var _pool = gameObject.AddComponent<ObjectPool>();
@@ -68,7 +67,7 @@ public class ItemsManager : MonoBehaviour
         ItemInfo info = null;
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i].id != id)
+            if (items[i].item.GetItemId() != id)
                 continue;
 
             info = items[i];
@@ -87,11 +86,40 @@ public class ItemsManager : MonoBehaviour
         return obj;
     }
 
-    public void ActivateRandomItem()
+    public void UpdateItemSpawn()
     {
-        int id = Random.Range(0, items.Count);
+        genItemtime += Time.deltaTime;
+        if (genItemtime > nextItemSpawnTime)
+        {
+            ActivateRandomItem(ItemBase.ItemTyoe.item);
+            genItemtime = 0;
+            nextItemSpawnTime = GetRandomItemSpawnTime();
+        }
+    }
 
-        var obj = ActivateItem(items[id].id);
+    public void UpdateJammerSpawn()
+    {
+        genJammertime += Time.deltaTime;
+        if(genJammertime > nextJammerSpawnTime)
+        {
+            ActivateRandomItem(ItemBase.ItemTyoe.jammer);
+            genJammertime = 0;
+            nextJammerSpawnTime = GetRandomJammerSpawnTime();
+        }
+    }
+
+    public void ActivateRandomItem(ItemBase.ItemTyoe generateItemType)
+    {
+        List<int> itemList = new List<int>();
+        foreach(var i in items)
+        {
+            if (i.item.type == generateItemType)
+                itemList.Add(i.item.GetItemId());
+        }
+
+        int count = Random.Range(0, itemList.Count);
+
+        var obj = ActivateItem(itemList[count]);
         obj.transform.position = GetRandomItemGeneratePos();
     }
 
@@ -113,5 +141,27 @@ public class ItemsManager : MonoBehaviour
         pos += generateOrigin;
 
         return pos;
+    }
+
+    public void SetJammerSpawnSpan(float span)
+    {
+        generateJammerSpan = 60 / span;
+        nextJammerSpawnTime = GetRandomJammerSpawnTime();
+    }
+
+    private float GetRandomJammerSpawnTime()
+    {
+        return Random.Range(0, generateJammerSpan * 2);
+    }
+
+    public void SetItemSpawnSpan(float span)
+    {
+        generateItemSpan = 60 / span;
+        nextItemSpawnTime = GetRandomItemSpawnTime();
+    }
+
+    private float GetRandomItemSpawnTime()
+    {
+        return Random.Range(0, generateJammerSpan * 2);
     }
 }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.SceneManagement;
 
 public static class SystemManager
 {
     private static bool isGrounded = false;
 
-    private static GameSystemManager gameSystemManager = null;
+    public static GameSystemManager gameSystemManager = null;
 
     public static GravityWall gravity = null;
     public static PlayerManager player = null;
@@ -21,8 +22,10 @@ public static class SystemManager
     public delegate void IsIngameSwitchDelegate(bool active);
     public static event IsIngameSwitchDelegate IsIngameSwitch;
 
-    private static readonly string SaveDataFolderPath = Path.Combine(Application.dataPath, @"SaveData");
+    private static readonly string SaveDataFolderPath = Path.Combine(Application.persistentDataPath, @"SaveData");
     private static readonly string SaveDataFilePath = Path.Combine(SaveDataFolderPath, "saveData");
+
+    public static bool onSceneDestroyed = false;
 
     public static void SetIsGrounded(bool active)
     {
@@ -70,53 +73,62 @@ public static class SystemManager
 
     public static void SavePlayerData()
     {
-        SavePlayerData player = CreateSavePlayerData();
-        // バイナリ形式でシリアル化
-        BinaryFormatter bf = new BinaryFormatter();
+        if(!Directory.Exists(SaveDataFolderPath))
+            Directory.CreateDirectory(SaveDataFolderPath);
 
-        // 指定したパスにファイルを作成
-        FileStream file = File.Create(SaveDataFilePath);
+        //StreamWriter writer;
 
-        try
-        {
-            // 指定したオブジェクトを上で作成したストリームにシリアル化する
-            bf.Serialize(file, player);
-        }
-        finally
-        {
-            // ファイル操作には明示的な破棄が必要です。Closeを忘れないように。
-            if (file != null)
-                file.Close();
-        }
+        SavePlayerData data = CreateSavePlayerData();
+        string jsonData = JsonUtility.ToJson(data);
+
+        //writer = new StreamWriter(Path.Combine(SaveDataFilePath + ".json"), false);
+
+        //writer.Write(jsonData);
+        //writer.Flush();
+        //writer.Close();
+
+        var file = new FileStream(Path.Combine(SaveDataFilePath + ".json"),FileMode.Create, FileAccess.Write);
+
+        // 文字列をbyte配列に変換
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+        // ファイルに保存
+        file.Write(bytes, 0, bytes.Length);
+
+        file.Close();
     }
 
     public static float LoadPlayerData()
     {
-        if (File.Exists(SaveDataFilePath))
-        {
-            // バイナリ形式でデシリアライズ
-            BinaryFormatter bf = new BinaryFormatter();
-            // 指定したパスのファイルストリームを開く
-            FileStream file = File.Open(SaveDataFilePath, FileMode.Open);
-            try
-            {
-                // 指定したファイルストリームをオブジェクトにデシリアライズ。
-                SavePlayerData player = (SavePlayerData)bf.Deserialize(file);
-                return player.score;
-            }
-            finally
-            {
-                // ファイル操作には明示的な破棄が必要です。Closeを忘れないように。
-                if (file != null)
-                    file.Close();
-            }
-        }
-        else
-        {
-            Debug.Log("no load file");
-        }
+        if (!File.Exists(Path.Combine(SaveDataFilePath + ".json")))
+            return -1;
 
-        return -1;
+        var file = new FileStream(Path.Combine(SaveDataFilePath + ".json"), FileMode.Open, FileAccess.Read);
+        byte[] bytes = new byte[file.Length];
+
+        // ファイルを読み込み
+        file.Read(bytes, 0, bytes.Length);
+
+        // 読み込んだbyte配列をJSON形式の文字列に変換
+        var jsonString = System.Text.Encoding.UTF8.GetString(bytes);
+
+        // JSON形式の文字列をセーブデータのクラスに変換
+        var playerData = JsonUtility.FromJson<SavePlayerData>(jsonString);
+
+        file.Close();
+
+        return playerData.score;
+
+        string data = "";
+        StreamReader reader;
+
+        reader = new StreamReader(Path.Combine(SaveDataFilePath + ".json"));
+
+        data = reader.ReadToEnd();
+        reader.Close();
+
+        var score = JsonUtility.FromJson<SavePlayerData>(data);
+        return score.score;
     }
 
     private static SavePlayerData CreateSavePlayerData()
@@ -124,5 +136,11 @@ public static class SystemManager
         SavePlayerData player = new SavePlayerData();
         player.score = gameSystemManager.GetDistance();
         return player;
+    }
+
+    public static void ResetDelegates(Scene scene)
+    {
+        OnIsGroundSwicthed = null;
+        IsIngameSwitch = null;
     }
 }

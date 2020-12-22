@@ -104,4 +104,18 @@ public class StepsManager : MonoBehaviour
 
         return pos;
     }
+
+    public float GetBottomOfHeight()
+    {
+        float h = 0;
+
+        foreach(var obj in activeStepList)
+        {
+            var height = obj.transform.position.y;
+            if (height < h)
+                h = height;
+        }
+
+        return h;
+    }
 }

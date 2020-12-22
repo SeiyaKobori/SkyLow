@@ -5,6 +5,7 @@ using UnityEngine;
 public class TakeOffPanel : ItemBase
 {
     protected override int itemId { get; set; } = 0;
+    public override ItemBase.ItemTyoe type { set; get; } = ItemTyoe.gimmick;
 
     private const float BoostValue = 30;
     [SerializeField]

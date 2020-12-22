@@ -11,11 +11,14 @@ public class GravityWall : MonoBehaviour
 
     private Animator gravityAnim = null;
 
+    private Collider gravityCollider = null;
+
     private void Awake()
     {
         SystemManager.gravity = this;
         SystemManager.gravityPower = gravityPower;
         gravityAnim = GetComponent<Animator>();
+        gravityCollider = GetComponent<Collider>();
     }
 
     // Start is called before the first frame update
@@ -62,5 +65,17 @@ public class GravityWall : MonoBehaviour
     public void SetGravityAnim(bool active)
     {
         gravityAnim.SetBool("Appear", active);
+    }
+
+    public float GetDistanceWithGravityWall(Vector3 from)
+    {
+        float dis = -1;
+        var dir = (transform.position - from).normalized;
+        Ray ray = new Ray(from, dir);
+        RaycastHit hit;
+        if (gravityCollider.Raycast(ray, out hit, Mathf.Infinity))
+            dis = hit.distance;
+
+        return dis;
     }
 }

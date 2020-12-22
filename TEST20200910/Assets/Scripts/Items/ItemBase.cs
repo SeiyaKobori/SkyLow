@@ -4,6 +4,14 @@ using UnityEngine;
 
 public abstract class ItemBase : MonoBehaviour, ItemInterface
 {
+    public enum ItemTyoe
+    {
+        item,
+        jammer,
+        gimmick,
+    }
+
+    public abstract ItemTyoe type { set; get; }
     protected abstract int itemId { set; get; }
 
     public int GetItemId()

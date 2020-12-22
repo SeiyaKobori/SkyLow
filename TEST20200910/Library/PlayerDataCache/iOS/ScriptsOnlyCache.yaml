@@ -5,11 +5,13 @@ ScriptsOnlyBuild:
     - Burst
     - CustomTeleporter
     - DebugTextDisplayer
+    - EffectManager
     - Fuel
     - GameOverPanel
     - GameSystemManager
     - GravityWall
     - ItemsManager
+    - LevelManager
     - ParalyzeStorm
     - PlayerAnimationControler
     - PlayerCameraControler
@@ -109,55 +111,59 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10142}
     - Class: 114
-      Script: {instanceID: 10388}
+      Script: {instanceID: 10156}
     - Class: 114
-      Script: {instanceID: 10536}
+      Script: {instanceID: 10390}
     - Class: 114
-      Script: {instanceID: 10594}
+      Script: {instanceID: 10538}
     - Class: 114
-      Script: {instanceID: 10666}
+      Script: {instanceID: 10596}
     - Class: 114
-      Script: {instanceID: 10754}
+      Script: {instanceID: 10668}
     - Class: 114
-      Script: {instanceID: 10792}
+      Script: {instanceID: 10756}
     - Class: 114
-      Script: {instanceID: 10874}
+      Script: {instanceID: 10794}
     - Class: 114
-      Script: {instanceID: 11010}
+      Script: {instanceID: 10876}
     - Class: 114
-      Script: {instanceID: 11048}
+      Script: {instanceID: 10974}
     - Class: 114
-      Script: {instanceID: 11226}
+      Script: {instanceID: 11004}
     - Class: 114
-      Script: {instanceID: 11434}
+      Script: {instanceID: 11016}
     - Class: 114
-      Script: {instanceID: 11556}
+      Script: {instanceID: 11054}
     - Class: 114
-      Script: {instanceID: 11602}
+      Script: {instanceID: 11232}
+    - Class: 114
+      Script: {instanceID: 11442}
+    - Class: 114
+      Script: {instanceID: 11564}
     - Class: 114
       Script: {instanceID: 11610}
     - Class: 114
-      Script: {instanceID: 11892}
+      Script: {instanceID: 11618}
     - Class: 114
-      Script: {instanceID: 11904}
+      Script: {instanceID: 11872}
     - Class: 114
-      Script: {instanceID: 11916}
+      Script: {instanceID: 11902}
     - Class: 114
-      Script: {instanceID: 11952}
+      Script: {instanceID: 11914}
+    - Class: 114
+      Script: {instanceID: 11926}
     - Class: 114
       Script: {instanceID: 11962}
     - Class: 114
-      Script: {instanceID: 12032}
+      Script: {instanceID: 11972}
     - Class: 114
-      Script: {instanceID: 12068}
+      Script: {instanceID: 12042}
     - Class: 114
-      Script: {instanceID: 12088}
+      Script: {instanceID: 12078}
     - Class: 114
-      Script: {instanceID: 64998}
+      Script: {instanceID: 12098}
     - Class: 114
-      Script: {instanceID: 88598}
-    - Class: 114
-      Script: {instanceID: 143318}
+      Script: {instanceID: 16696}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -261,7 +267,7 @@ ScriptsOnlyBuild:
     className: AICharacterControl
   - hash:
       serializedVersion: 2
-      Hash: 414828da793bb0d1b41c1d9403c24143
+      Hash: d5916ef4ad37114053895118168148c7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameSystemManager
@@ -355,6 +361,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
     className: TestResultRendererCallback
+  - hash:
+      serializedVersion: 2
+      Hash: a7ccaa9e81e851218a34f9b63c0e93fb
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CustomTeleporter
   - hash:
       serializedVersion: 2
       Hash: 9e70ecf91466f07d9bd649be625cae52
@@ -729,10 +741,22 @@ ScriptsOnlyBuild:
     className: ObjectResetter
   - hash:
       serializedVersion: 2
+      Hash: fe2892c007c7384e07a6145d8bf92550
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: EffectManager
+  - hash:
+      serializedVersion: 2
       Hash: 9cc3904a86f5a119184da7351cdb4e65
     assemblyName: Assembly-CSharp.dll
     namespaceName: UnityStandardAssets.ImageEffects
     className: DepthOfField
+  - hash:
+      serializedVersion: 2
+      Hash: 6d7dd5ed67d9a373e243e657b3604a80
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DebugTextDisplayer
   - hash:
       serializedVersion: 2
       Hash: 6fb512c6733e02f441372611e6f94f11
@@ -891,7 +915,7 @@ ScriptsOnlyBuild:
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
-      Hash: ff081e3638173b70951a791d4630b049
+      Hash: e9e3f097e26b528eb13fcc7abd6a7659
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ItemsManager
@@ -1008,6 +1032,12 @@ ScriptsOnlyBuild:
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
+    className: GameOverPanel
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
     className: Step01
   - hash:
       serializedVersion: 2
@@ -1059,7 +1089,7 @@ ScriptsOnlyBuild:
     className: BaseInput
   - hash:
       serializedVersion: 2
-      Hash: ed73a99ee6a640fb17f023eb6ff5ebf5
+      Hash: 637f9129a56f6c315e61bd25ebaa43c7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerLocomotor
@@ -1161,22 +1191,10 @@ ScriptsOnlyBuild:
     className: AutoMobileShaderSwitch
   - hash:
       serializedVersion: 2
-      Hash: a7ccaa9e81e851218a34f9b63c0e93fb
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CustomTeleporter
-  - hash:
-      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: GameOverPanel
-  - hash:
-      serializedVersion: 2
-      Hash: 6d7dd5ed67d9a373e243e657b3604a80
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: DebugTextDisplayer
+    className: LevelManager
   platform: 9
   scenePathNames:
   - Assets/Scenes/Main.unity

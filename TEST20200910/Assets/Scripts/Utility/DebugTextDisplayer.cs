@@ -23,13 +23,13 @@ public class DebugTextDisplayer : MonoBehaviour
 
     public void DisplayDebugText(string debugText)
     {
+        debug_text.gameObject.SetActive(true);
         debug_text.text = debugText;
         StartCoroutine(displayTextCoroutine());
     }
 
     private IEnumerator displayTextCoroutine()
     {
-        debug_text.gameObject.SetActive(true);
         yield return new WaitForSeconds(3f);
         debug_text.gameObject.SetActive(false);
     }

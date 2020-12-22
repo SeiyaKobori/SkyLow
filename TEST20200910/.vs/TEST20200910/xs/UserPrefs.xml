@@ -1,65 +1,40 @@
-﻿<Properties StartupConfiguration="{CB10552B-0991-EAF2-ADB1-B8E8C17195CE}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Utility/SystemManager.cs">
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Environment/Steps/StepsManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/Player/PlayerLocomotor.cs" Line="123" Column="20" />
-      <File FileName="Assets/Scripts/Player/PlayerManager.cs" Line="274" Column="10" />
-      <File FileName="Assets/Scripts/Ads/AdsManager.cs" Line="55" Column="6" />
-      <File FileName="Assets/Scripts/Manager/GameSystemManager.cs" Line="234" Column="17" />
-      <File FileName="Assets/Scripts/Environment/Steps/StartFloorManager.cs" Line="65" Column="12" />
-      <File FileName="Assets/Scripts/Environment/GameOver/GameOverPanel.cs" Line="16" Column="33" />
-      <File FileName="Assets/Scripts/UI/UIManager.cs" Line="15" Column="37" />
-      <File FileName="Assets/Scripts/Utility/SystemManager.cs" Line="16" Column="19" />
-      <File FileName="Assets/Scripts/Utility/DebugTextDisplayer.cs" Line="5" Column="32" />
+      <File FileName="Assets/Scripts/Environment/Effects/EffectManager.cs" Line="52" Column="79" />
+      <File FileName="Assets/Scripts/Manager/GameSystemManager.cs" Line="132" Column="31" />
+      <File FileName="Assets/Scripts/Items/ItemsManager.cs" />
+      <File FileName="Assets/Scripts/Environment/GravityWall/GravityWall.cs" />
+      <File FileName="Assets/Scripts/Environment/Steps/StepsManager.cs" Line="108" Column="29" />
+      <File FileName="Assets/Scripts/Player/PlayerManager.cs" Line="219" Column="32" />
+      <File FileName="Assets/Scripts/Environment/GameOver/GameOverPanel.cs" Line="46" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="TEST20200910" expanded="True">
-            <Node name="Assets" expanded="True">
-              <Node name="GoogleMobileAds" expanded="True">
-                <Node name="Common" expanded="True" />
-              </Node>
-              <Node name="SaveData" expanded="True" />
-              <Node name="Scripts" expanded="True">
-                <Node name="Ads" expanded="True" />
-                <Node name="Environment" expanded="True">
-                  <Node name="GameOver" expanded="True" />
-                  <Node name="Steps" expanded="True" />
-                </Node>
-                <Node name="Items" expanded="True">
-                  <Node name="Items" expanded="True" />
-                </Node>
-                <Node name="Manager" expanded="True" />
-                <Node name="Player" expanded="True" />
-                <Node name="UI" expanded="True">
-                  <Node name="VirtualPad" expanded="True" />
-                </Node>
-                <Node name="Utility" expanded="True">
-                  <Node name="SystemManager.cs" selected="True" />
-                </Node>
-              </Node>
-              <Node name="SKY city lite" expanded="True">
-                <Node name="Standard Assets" expanded="True">
-                  <Node name="Utility" expanded="True" />
+            <Node name="Assembly-CSharp" expanded="True">
+              <Node name="Assets" expanded="True">
+                <Node name="Scripts" expanded="True">
+                  <Node name="Environment" expanded="True">
+                    <Node name="GameOver" expanded="True" />
+                    <Node name="Steps" expanded="True">
+                      <Node name="StepsManager.cs" selected="True" />
+                    </Node>
+                  </Node>
+                  <Node name="Manager" expanded="True" />
+                  <Node name="Player" expanded="True" />
                 </Node>
               </Node>
             </Node>
           </Node>
         </State>
       </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
-      </Pad>
-      <Pad Id="MonoDevelop.UnitTesting.TestPad">
-        <State name="__root__">
-          <Node name="TEST20200910" selected="True" />
-        </State>
-      </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="d7dbd9f3-2357-41f0-8df0-fd9186f69357" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="3d37b556-5a6a-4e6d-aa04-4ff95f34155a" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
