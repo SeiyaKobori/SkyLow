@@ -27,6 +27,12 @@ public static class SystemManager
 
     public static bool onSceneDestroyed = false;
 
+    public static NCMB.HighScore highScore;
+    public static string check_first_login_key = "isFirstLogin";
+
+    public static string user_name_key = "UserName";
+    public static string password_key = "Passwords";
+
     public static void SetIsGrounded(bool active)
     {
         if (isGrounded == active)
@@ -142,5 +148,11 @@ public static class SystemManager
     {
         OnIsGroundSwicthed = null;
         IsIngameSwitch = null;
+    }
+
+    public static void SaveHighScoreNCMB(NCMB.HighScore highScore, int score)
+    {
+        highScore.score = score;
+        highScore.save();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using NCMB;
 
 [RequireComponent(typeof(EffectManager))]
 [RequireComponent(typeof(LevelManager))]
@@ -29,7 +30,7 @@ public class GameSystemManager : MonoBehaviour
     [SerializeField]
     private Rigidbody distanceWatcher = null;
     private float posOld = 0;
-    private float highScore = 0;
+    private NCMB.HighScore highScore;
     [SerializeField]
     private Text highScoreText = null;
     [SerializeField]
@@ -53,7 +54,7 @@ public class GameSystemManager : MonoBehaviour
     private Slider distanceSlider = null;
 
     [SerializeField]
-    private GameObject startMenuCanvas = null;
+    private StartMenuCanvasManager startMenuCanvas = null;
     [SerializeField]
     private GameObject ingameCanvas = null;
     [SerializeField]
@@ -100,18 +101,25 @@ public class GameSystemManager : MonoBehaviour
         startCamAnim.OnFinishAnim += GameStart;
         effectManager = GetComponent<EffectManager>();
         levelManager = GetComponent<LevelManager>();
+
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        UpdateHighscoreText();
         player.OnTouchGravity += GameOverGravity;
         player.OnFallStage += GameOverFall;
         playerRigidbody = SystemManager.player.gameObject.GetComponent<Rigidbody>();
         SystemManager.gravity.SetGravityPower(levelManager.GetGravityPower(currentLevel));
         itemManager.SetItemSpawnSpan(levelManager.GetItemSpan(currentLevel));
         itemManager.SetJammerSpawnSpan(levelManager.GetjammerSpan(currentLevel));
+        FindObjectOfType<UserAuth>().logIn();
+
+        string name = FindObjectOfType<UserAuth>().currentPlayer();
+        highScore = new NCMB.HighScore(0, name);
+        highScore.fetch();
+        UpdateHighscoreText();
+
     }
 
     // Update is called once per frame
@@ -234,11 +242,12 @@ public class GameSystemManager : MonoBehaviour
         SystemManager.SetIsIngame(false);
         ingameCanvas.SetActive(false);
         gameOverScoreText.text = (distance / 100).ToString("N2") + "km";
-        if (distance > highScore)
+        if (distance > highScore.score)
         {
             try
             {
                 SystemManager.SavePlayerData();
+                SystemManager.SaveHighScoreNCMB(highScore, (int)distance);
             }
             catch
             {
@@ -309,7 +318,7 @@ public class GameSystemManager : MonoBehaviour
 
     public void ActivateGameStartCoroutine()
     {
-        startMenuCanvas.SetActive(false);
+        startMenuCanvas.gameObject.SetActive(false);
         StartCoroutine(GameStartCoroutine());
     }
 
@@ -356,8 +365,11 @@ public class GameSystemManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        if(highScore < distance)
+        if (highScore.score < distance)
+        {
             SystemManager.SavePlayerData();
+            SystemManager.SaveHighScoreNCMB(highScore, (int)distance);
+        }
     }
 
     public float GetDistance()
@@ -367,13 +379,15 @@ public class GameSystemManager : MonoBehaviour
 
     private void UpdateHighscoreText()
     {
-        highScore = SystemManager.LoadPlayerData();
-        highScoreText.text = (highScore / 100).ToString("N2") + "km";
+
+        highScore.fetch();
+        highScoreText.text = (highScore.score / 100).ToString("N2") + "km";
     }
 
     public void SaveData()
     {
         SystemManager.SavePlayerData();
+        SystemManager.SaveHighScoreNCMB(highScore, (int)highScore.score);
     }
 
     public void SetGameOverPanel(GameOverPanel panel)
