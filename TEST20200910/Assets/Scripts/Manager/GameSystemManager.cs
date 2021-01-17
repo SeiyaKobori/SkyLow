@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using NCMB;
+using naichilab.Scripts.Extensions;
 
 [RequireComponent(typeof(EffectManager))]
 [RequireComponent(typeof(LevelManager))]
@@ -31,10 +32,11 @@ public class GameSystemManager : MonoBehaviour
     private Rigidbody distanceWatcher = null;
     private float posOld = 0;
     private NCMB.HighScore highScore;
+    private bool isHighScoreFetched = false;
     [SerializeField]
     private Text highScoreText = null;
     [SerializeField]
-    private float distance = 0; //進んだ距離
+    private double distance = 0; //進んだ距離
     private float distanceSpan = 0;
     private float GenerateStepSpan = 40;
 
@@ -49,9 +51,6 @@ public class GameSystemManager : MonoBehaviour
     private StepsManager stepManager = null;
     [SerializeField]
     private ItemsManager itemManager = null;
-
-    [SerializeField]
-    private Slider distanceSlider = null;
 
     [SerializeField]
     private StartMenuCanvasManager startMenuCanvas = null;
@@ -84,6 +83,8 @@ public class GameSystemManager : MonoBehaviour
 
     private LevelManager levelManager = null;
 
+    private UserAuth user_auth = null;
+
     private void Awake()
     {
         if (!SystemManager.onSceneDestroyed)
@@ -101,30 +102,43 @@ public class GameSystemManager : MonoBehaviour
         startCamAnim.OnFinishAnim += GameStart;
         effectManager = GetComponent<EffectManager>();
         levelManager = GetComponent<LevelManager>();
-
+        user_auth = FindObjectOfType<UserAuth>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        NCMBUser.LogOutAsync();
+
         player.OnTouchGravity += GameOverGravity;
         player.OnFallStage += GameOverFall;
         playerRigidbody = SystemManager.player.gameObject.GetComponent<Rigidbody>();
         SystemManager.gravity.SetGravityPower(levelManager.GetGravityPower(currentLevel));
         itemManager.SetItemSpawnSpan(levelManager.GetItemSpan(currentLevel));
         itemManager.SetJammerSpawnSpan(levelManager.GetjammerSpan(currentLevel));
-        FindObjectOfType<UserAuth>().logIn();
 
-        string name = FindObjectOfType<UserAuth>().currentPlayer();
-        highScore = new NCMB.HighScore(0, name);
-        highScore.fetch();
-        UpdateHighscoreText();
-
+        user_auth.logIn();
+        startMenuCanvas.CreateRankingBoard();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(user_auth.isLogIn && highScore == null)
+        {
+            string name = user_auth.currentPlayer();
+            highScore = new NCMB.HighScore(-1, name);
+            highScore.fetch();
+        }
+
+        if(!isHighScoreFetched && highScore != null && highScore.isFetched)
+        {
+            isHighScoreFetched = true;
+            Debug.Log("Highscore Fetched!!");
+            UpdateHighscoreText();
+            startMenuCanvas.FetchPlayerRank(highScore.score);
+        }
+
         if (Input.GetKeyDown(KeyCode.S))
             SystemManager.gravity.GetDistanceWithGravityWall(player.transform.position);
             
@@ -198,7 +212,7 @@ public class GameSystemManager : MonoBehaviour
             LevelUp();
             levelUpBoader = 0;
         }
-        distanceText.text = (distance / 100).ToString("N2") + "km";
+        distanceText.text = distance.ToReadableString() + " km";
         distanceSpan += Mathf.Abs(diff);
         posOld = distanceWatcher.position.z;
     }
@@ -312,7 +326,7 @@ public class GameSystemManager : MonoBehaviour
         ingameCanvas.SetActive(true);
         mainCamera.gameObject.SetActive(true);
         StartCamera.gameObject.SetActive(false);
-
+        Time.timeScale = SystemManager.default_game_speed;
         SystemManager.SetIsIngame(true);
     }
 
@@ -358,7 +372,7 @@ public class GameSystemManager : MonoBehaviour
     public void Pause()
     {
         isPause = !isPause;
-        Time.timeScale = isPause ? 0 : 1;
+        Time.timeScale = isPause ? 0 : SystemManager.default_game_speed;
         uiManager.SetPauseImageActive(isPause);
         SystemManager.SetIsIngame(!isPause);
     }
@@ -372,16 +386,18 @@ public class GameSystemManager : MonoBehaviour
         }
     }
 
-    public float GetDistance()
+    public double GetDistance()
     {
         return distance;
     }
 
     private void UpdateHighscoreText()
     {
+        if(!highScore.isFetched)
+            highScore.fetch();
 
-        highScore.fetch();
-        highScoreText.text = (highScore.score / 100).ToString("N2") + "km";
+        if(highScore.isFetched)
+            highScoreText.text = (highScore.score / 100).ToString("N2") + "km";
     }
 
     public void SaveData()

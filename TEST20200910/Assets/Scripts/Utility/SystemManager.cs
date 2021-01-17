@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.SceneManagement;
+using naichilab.Scripts.Extensions;
 
 public static class SystemManager
 {
@@ -32,6 +33,8 @@ public static class SystemManager
 
     public static string user_name_key = "UserName";
     public static string password_key = "Passwords";
+
+    public static int default_game_speed = 2;
 
     public static void SetIsGrounded(bool active)
     {
@@ -140,7 +143,7 @@ public static class SystemManager
     private static SavePlayerData CreateSavePlayerData()
     {
         SavePlayerData player = new SavePlayerData();
-        player.score = gameSystemManager.GetDistance();
+        player.score = (float)gameSystemManager.GetDistance();
         return player;
     }
 
@@ -154,5 +157,20 @@ public static class SystemManager
     {
         highScore.score = score;
         highScore.save();
+    }
+
+    public static string GetScoreText(float score)
+    {
+        double s = score;
+        var t = s.ToReadableString();
+
+        return t;
+    }
+
+    public static string GetScoreText(double score)
+    {
+        var t = score.ToReadableString();
+
+        return t;
     }
 }

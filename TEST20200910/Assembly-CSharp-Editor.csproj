@@ -70,6 +70,7 @@
     <Compile Include="Assets\Editor\SimpleJSONBinary.cs" />
     <Compile Include="Assets\Editor\SimpleJSONUnity.cs" />
     <Compile Include="Assets\Editor\UpdateXcodeProject.cs" />
+    <Compile Include="Assets\naichilab\Scripts\Extensions\Editor\DoubleExtensionsTest.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
@@ -99,6 +100,9 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>

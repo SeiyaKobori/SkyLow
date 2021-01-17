@@ -30,6 +30,7 @@ public class PlayerLocomotor : MonoBehaviour
 
     [SerializeField]
     private Slider boostGauge = null;
+    private Image boostGaugeFill = null;
     private const float boostMax = 100f; //ブースト燃料のマックス
     private float currentBoostRemain = 100; //ブースト燃料の残り
     private const float boostCost = 10f; //ブーストするのに必要な燃料コスト。コスト毎秒必要 
@@ -57,6 +58,7 @@ public class PlayerLocomotor : MonoBehaviour
         currentBoostRemain = boostMax;
         SystemManager.IsIngameSwitch += SetIsIngame;
         RB = transform.GetComponentInChildren<Rigidbody>();
+        boostGaugeFill = boostGauge.fillRect.GetComponent<Image>();
     }
 
     private void Start()
@@ -209,6 +211,7 @@ public class PlayerLocomotor : MonoBehaviour
                 c.a = Mathf.Lerp(boostOverHeatColor.a, boostNormalColor.a, l);
 
                 main.startColor = c;
+                boostGaugeFill.color = c;
             }
 
             if (!boostParticle.isEmitting)

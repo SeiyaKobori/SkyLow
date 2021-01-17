@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\FullTiltBoogie\RotateFlareHolder.cs" />
+    <Compile Include="Assets\naichilab\Scripts\Extensions\DoubleExtensions.cs" />
     <Compile Include="Assets\NCMB\NCMBManager.cs" />
     <Compile Include="Assets\NCMB\NCMBSettings.cs" />
     <Compile Include="Assets\NCMB\Script\CommonConstant.cs" />
@@ -142,6 +143,8 @@
     <Compile Include="Assets\Scripts\Ranking\HighScore.cs" />
     <Compile Include="Assets\Scripts\Ranking\LeaderBoard.cs" />
     <Compile Include="Assets\Scripts\Ranking\UserAuth.cs" />
+    <Compile Include="Assets\Scripts\UI\Ranking\RankingUIManager.cs" />
+    <Compile Include="Assets\Scripts\UI\Ranking\UserDataElement.cs" />
     <Compile Include="Assets\Scripts\UI\StartMenuCanvasManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
     <Compile Include="Assets\Scripts\UI\VirtualPad\VirtualPadManager.cs" />
@@ -229,6 +232,7 @@
     <Compile Include="Assets\SKY city lite\Standard Assets\Utility\TimedObjectDestructor.cs" />
     <Compile Include="Assets\SKY city lite\Standard Assets\Utility\WaypointCircuit.cs" />
     <Compile Include="Assets\SKY city lite\Standard Assets\Utility\WaypointProgressTracker.cs" />
+    <Compile Include="Assets\Techno Blue UI\Demo_Assets\scripts\GUI_Demo.cs" />
     <Compile Include="Assets\Teleportation Pad\CustomTeleporter.cs" />
     <None Include="Assets\SKY city lite\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\SKY city lite\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
@@ -336,6 +340,9 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>/Users/seiyakobori/Documents/UnityProjects/SkyLow/SkyLow/TEST20200910/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>

@@ -5,8 +5,10 @@ namespace NCMB
 {
     public class HighScore
     {
-        public int score { get; set; }
+        public int score { get; set; } = -1;
         public string name { get; private set; }
+
+        public bool isFetched = false;
 
         // コンストラクタ -----------------------------------
         public HighScore(int _score, string _name)
@@ -35,6 +37,7 @@ namespace NCMB
         // サーバーからハイスコアを取得  -----------------
         public void fetch()
         {
+            isFetched = false;
             // データストアの「HighScore」クラスから、Nameをキーにして検索
             NCMBQuery<NCMBObject> query = new NCMBQuery<NCMBObject>("HighScore");
             query.WhereEqualTo("Name", name);
@@ -57,6 +60,8 @@ namespace NCMB
                     {
                         score = System.Convert.ToInt32(objList[0]["Score"]);
                     }
+
+                    isFetched = true;
                 }
             });
         }

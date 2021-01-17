@@ -9,6 +9,8 @@ public class UserAuth : MonoBehaviour
     private string currentPlayerName;
     private UserAuth instance = null;
 
+    public bool isLogIn = false;
+
     void Awake()
     {
         if (instance == null)
@@ -52,6 +54,7 @@ public class UserAuth : MonoBehaviour
             if (e == null)
             {
                 currentPlayerName = id;
+                isLogIn = true;
             }
         });
     }

@@ -28,13 +28,13 @@ public class LeaderBoard
         });
     }
 
-    // サーバーからトップ5を取得 ---------------    
-    public void fetchTopRankers()
+    // サーバーからトップ(Limit件)を取得 ---------------    
+    public void fetchTopRankers(int limit)
     {
         // データストアの「HighScore」クラスから検索
         NCMBQuery<NCMBObject> query = new NCMBQuery<NCMBObject>("HighScore");
         query.OrderByDescending("Score");
-        query.Limit = 5;
+        query.Limit = limit;
         query.FindAsync((List<NCMBObject> objList, NCMBException e) => {
 
             if (e != null)
@@ -57,20 +57,20 @@ public class LeaderBoard
         });
     }
 
-    // サーバーからrankの前後2件を取得 ---------------
-    public void fetchNeighbors()
+    // サーバーからrankの前後Limit件を取得 ---------------
+    public void fetchNeighbors(int limit) //自分のランクの前後count人ずつ取得
     {
         neighbors = new List<NCMB.HighScore>();
 
         // スキップする数を決める（ただし自分が1位か2位のときは調整する）
-        int numSkip = currentRank - 3;
+        int numSkip = currentRank - (limit / 2);
         if (numSkip < 0) numSkip = 0;
 
         // データストアの「HighScore」クラスから検索
         NCMBQuery<NCMBObject> query = new NCMBQuery<NCMBObject>("HighScore");
         query.OrderByDescending("Score");
         query.Skip = numSkip;
-        query.Limit = 5;
+        query.Limit = limit;
         query.FindAsync((List<NCMBObject> objList, NCMBException e) => {
 
             if (e != null)
